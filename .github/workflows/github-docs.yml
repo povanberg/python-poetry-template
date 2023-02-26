@@ -46,6 +46,6 @@ jobs:
           --rm ${{env.PROJECT_NAME}}-${{env.DOCKER_SERVICE}}:${{ env.DOCKER_TARGET }}
           "cd /mnt/workspace &&
            git config --global --add safe.directory /mnt/workspace &&
-           git remote set-url origin  https://${{ secrets.GITHUB_TOKEN }}@github.com/pvanberg/python-poetry-template.git &&
+           git remote set-url origin  https://${{ secrets.GITHUB_TOKEN }}@github.com/povanberg/python-poetry-template.git &&
            poetry install --with docs &&
            poetry run mkdocs gh-deploy --force --clean --verbose"
