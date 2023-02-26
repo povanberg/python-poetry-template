@@ -95,4 +95,15 @@ Prior to developement, you should update the following values according to your 
       <td>plugins.mkdocstrings.watch</td>
    </tr>
 
+   <tr>
+      <td rowspan="2"><code>REPO_URL</code></td>
+      <td rowspan="2"><i>https://github.com/povanberg/python-poetry-template</i></td>
+      <td>pyproject.toml</td>
+      <td>tool.poetry.repository</td>
+   </tr>
+   <tr>
+      <td>mkdocs.yml</td>
+      <td>repo_url</td>
+   </tr>
+
 </table>

@@ -3,7 +3,7 @@ site_description: A template for dockerized python projects with poetry for depe
 site_author: Author Name
 edit_uri: edit/main/docs/
 repo_name: pypoetry_template
-repo_url: https://github.com/pvanberg/python-poetry-template
+repo_url: https://github.com/povanberg/python-poetry-template
 copyright: Maintained by <a href="author@mail.com">Author Name</a>.
 
 nav:

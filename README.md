@@ -4,14 +4,14 @@
 
 <div>
 <img src="https://badgen.net/badge/license/GPL-3/blue"> 
-<img src="https://github.com/pvanberg/python-poetry-template/actions/workflows/github-ci-cd.yml/badge.svg">
-<img src="https://github.com/pvanberg/python-poetry-template/actions/workflows/github-docs.yml/badge.svg">
+<img src="https://github.com/povanberg/python-poetry-template/actions/workflows/github-ci-cd.yml/badge.svg">
+<img src="https://github.com/povanberg/python-poetry-template/actions/workflows/github-docs.yml/badge.svg">
 <img src="https://badgen.net/badge/code%20style/black/black">
 </div>
 
 
 <p align="center">
-<a href="https://pvanberg.github.io/python-poetry-template/">Documentation</a> | <a href="https://github.com/pvanberg/python-poetry-template/actions"> Github Actions </a>
+<a href="https://povanberg.github.io/python-poetry-template/">Documentation</a> | <a href="https://github.com/povanberg/python-poetry-template/actions"> Github Actions </a>
 </p>
 
 ## Introduction
@@ -24,7 +24,7 @@ This template is designed to be used as a starting point for new python projects
 
 - <code>Use this template > Create a new repository</code> : First, you can clone this template from the UI by clicking on the upper left repository button.
 - <code>Use this template > Open in codespace</code> : Second, you can directly try it out in Github codespace (build time <= 1.30min). Codespace is a Github feature that allows you to develop directly in the cloud using VSCode devcontainer. For more information, please refer to <a href="https://docs.github.com/en/codespaces">Github Codespace</a>.
-- <code>git clone https://github.com/pvanberg/python-poetry-template.git</code> : Third, you can clone this template from the command line. 
+- <code>git clone https://github.com/povanberg/python-poetry-template.git</code> : Third, you can clone this template from the command line. 
 
 #### Installation
 
@@ -103,6 +103,17 @@ Prior to developement, you should update the following values according to your 
       <td>plugins.mkdocstrings.watch</td>
    </tr>
 
+   <tr>
+      <td rowspan="2"><code>REPO_URL</code></td>
+      <td rowspan="2"><i>https://github.com/povanberg/python-poetry-template</i></td>
+      <td>pyproject.toml</td>
+      <td>tool.poetry.repository</td>
+   </tr>
+   <tr>
+      <td>mkdocs.yml</td>
+      <td>repo_url</td>
+   </tr>
+
 </table>
 
 ## Project structure
@@ -177,7 +188,7 @@ poetry run mkdocs serve
 
 #### Github Pages deployment
 <p align="justify">
-The MkDocs documentation is automatically generated and published to Github Pages using the <code><a href="github/workflows/github-docs.yml">github-docs.yml</a></code> workflow. The workflow is triggered on each push to the main branch and on each release. The workflow will build the documentation and push it to the `gh-pages` branch. Then, a second workflow will be trigered on the `gh-pages` branch focused on the deployment. Once completed, the documentation website is available at <a href="https://pvanberg.github.io/python-poetry-template/">https://&lt;USERNAME&gt;.github.io/&lt;REPOSITORY_NAME&gt;/</a>. 
+The MkDocs documentation is automatically generated and published to Github Pages using the <code><a href="github/workflows/github-docs.yml">github-docs.yml</a></code> workflow. The workflow is triggered on each push to the main branch and on each release. The workflow will build the documentation and push it to the `gh-pages` branch. Then, a second workflow will be trigered on the `gh-pages` branch focused on the deployment. Once completed, the documentation website is available at <a href="https://povanberg.github.io/python-poetry-template/">https://&lt;USERNAME&gt;.github.io/&lt;REPOSITORY_NAME&gt;/</a>. 
 </p>
 
    <p align="center">
@@ -227,7 +238,7 @@ Each time you create a new release on GitHub, you can trigger a workflow to publ
       <img src="docs/assets/template/github_actions_secrets.png" width=65% height=100%>
    </p>
 
- 5) You are done. The [workflow](.github/workflows/github-ci-cd.yml) will automatically build and push the image to docker hub. Finally once your workflow run is completed, you can verify that your image is available on you docker hub ([example for this template](https://hub.docker.com/repository/docker/pvanberg/python-poetry-template-dev)).
+ 5) You are done. The [workflow](.github/workflows/github-ci-cd.yml) will automatically build and push the image to docker hub. Finally once your workflow run is completed, you can verify that your image is available on you docker hub ([example for this template](https://hub.docker.com/repository/docker/povanbergdev/python-poetry-template-dev)).
 
 #### Private docker registry
 
