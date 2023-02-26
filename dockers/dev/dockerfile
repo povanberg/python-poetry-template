@@ -1,0 +1,44 @@
+FROM python:3.11.0-slim as default-img
+
+# Environment
+ENV POETRY_VERSION=1.3.1
+ENV PATH="${PATH}:/root/.local/bin"
+# [Optional]
+ENV GIT_SSL_NO_VERIFY=TRUE
+ENV CURL_CA_BUNDLE=""
+
+# Install dependencies
+RUN apt update
+RUN apt install -y bash && \
+    apt install -y gcc  && \
+    apt install -y git
+RUN pip install --user poetry==$POETRY_VERSION
+
+# User
+WORKDIR /home/appuser
+
+ENTRYPOINT ["/bin/bash", "-c"]
+
+# Base image
+FROM default-img as base-img
+
+COPY assets assets
+COPY src src
+COPY scripts scripts
+COPY pyproject.toml pyproject.toml
+COPY poetry.lock poetry.lock
+COPY README.md README.md
+RUN poetry install --only=main
+
+# Testing
+FROM base-img as testing
+
+COPY tests tests
+RUN poetry install --with=dev
+
+# Documentation
+FROM base-img as docs
+
+COPY mkdocs.yml mkdocs.yml
+COPY docs docs
+RUN poetry install --with=docs

@@ -1,0 +1,178 @@
+name: CI/CD pipeline
+run-name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    branches: [main]
+
+env:
+  PROJECT_NAME: ${{ github.event.repository.name }}
+  PROJECT_SRC_DIR: src/
+  PROJECT_TESTS_DIR: tests/
+
+  DOCKER_SERVICE: dev
+  DOCKER_TARGET: testing
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      DOCKER_IMAGE: ${{ steps.set_outputs.outputs.DOCKER_IMAGE }}
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ secrets.DOCKER_USERNAME }}/${{env.PROJECT_NAME}}-${{env.DOCKER_SERVICE}}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+      -
+        name: Docker login
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      -
+        name: Docker build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          file: dockers/${{env.DOCKER_SERVICE}}/dockerfile
+          target: ${{env.DOCKER_TARGET}}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      -
+        name: Set Docker Image Name
+        id: set_outputs
+        run: |
+          DOCKER_IMAGE_ENCRYPTED=$(gpg --symmetric --batch --passphrase pass --output - <(echo ${{ steps.meta.outputs.tags }}) | base64 -w0)
+          echo "DOCKER_IMAGE=$DOCKER_IMAGE_ENCRYPTED" >> $GITHUB_OUTPUT
+
+  static:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      - 
+        name: Retrieve Docker image name
+        run: |
+          DOCKER_IMAGE_DECRYPTED=$(gpg --decrypt --quiet --batch --passphrase pass --output - <(echo ${{ needs.build.outputs.DOCKER_IMAGE}} | base64 --decode))
+          echo "DOCKER_IMAGE=$DOCKER_IMAGE_DECRYPTED" >> $GITHUB_ENV
+      -
+        name: Docker login
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - 
+        name: Docker pull
+        run: docker pull $DOCKER_IMAGE
+      -
+        name: Black
+        run: >
+          docker run --rm --name=${{ github.run_id }} $DOCKER_IMAGE
+          "poetry run black --check ${{env.PROJECT_SRC_DIR}}"
+      -
+        name: Pylint
+        run: >
+          docker run --rm --name=${{ github.run_id }} $DOCKER_IMAGE
+          "poetry run pylint --rcfile=pyproject.toml ${{env.PROJECT_SRC_DIR}}"
+      -
+        name: Flake8
+        run: >
+          docker run --rm --name=${{ github.run_id }} $DOCKER_IMAGE
+          "poetry run flake8 --toml-config=pyproject.toml ${{env.PROJECT_SRC_DIR}}"
+      -
+        name: Isort
+        run: >
+          docker run --rm --name=${{ github.run_id }} $DOCKER_IMAGE
+          "poetry run isort --check-only --settings-path=pyproject.toml ${{env.PROJECT_SRC_DIR}}"
+      -
+        name: Mypy
+        run: >
+          docker run --rm --name=${{ github.run_id }} $DOCKER_IMAGE
+          "poetry run mypy --config=pyproject.toml ${{env.PROJECT_SRC_DIR}}"
+
+  testing:
+    runs-on: ubuntu-latest
+    needs: [build, static]
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      - 
+        name: Retrieve Docker image name
+        run: |
+          DOCKER_IMAGE_DECRYPTED=$(gpg --decrypt --quiet --batch --passphrase pass --output - <(echo ${{ needs.build.outputs.DOCKER_IMAGE}} | base64 --decode))
+          echo "DOCKER_IMAGE=$DOCKER_IMAGE_DECRYPTED" >> $GITHUB_ENV
+      -
+        name: Docker login
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - 
+        name: Docker pull
+        run: docker pull $DOCKER_IMAGE
+      -
+        name: Unit testing
+        run: >
+          docker run --rm --name=${{ github.run_id }} $DOCKER_IMAGE
+          "poetry run pytest --cov-report=term-missing --cov=${{env.PROJECT_SRC_DIR}} ${{env.PROJECT_TESTS_DIR}}"
+
+  security:
+    runs-on: ubuntu-latest
+    needs: [build, testing]
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      - 
+        name: Retrieve Docker image name
+        run: |
+          DOCKER_IMAGE_DECRYPTED=$(gpg --decrypt --quiet --batch --passphrase pass --output - <(echo ${{ needs.build.outputs.DOCKER_IMAGE}} | base64 --decode))
+          echo "DOCKER_IMAGE=$DOCKER_IMAGE_DECRYPTED" >> $GITHUB_ENV
+      -
+        name: Docker login
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - 
+        name: Docker pull
+        run: docker pull $DOCKER_IMAGE
+      -
+        name: Bandit
+        run: >
+          docker run --rm --name=${{ github.run_id }} $DOCKER_IMAGE
+          "poetry run bandit ${{env.PROJECT_SRC_DIR}}"
+      -
+        name: Safety
+        run: >
+          docker run --rm --name=${{ github.run_id }} $DOCKER_IMAGE
+          "poetry run safety check"

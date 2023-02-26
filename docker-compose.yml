@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: ./dockers/dev/dockerfile
+      target: testing
+    entrypoint: ["/bin/bash"]
+    stdin_open: true
+    tty: true
+    ports:
+      # Jupyter Notebook default port
+      - "8888:8888"
+    volumes:
+      # Mount the project directory in the container
+      # so that the user can edit the code on the host
+      # and have it reflected in the container.
+      - .:/mnt/workspace
+    environment:
+      DEBUG: "True"

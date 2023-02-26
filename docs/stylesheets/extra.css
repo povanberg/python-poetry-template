@@ -1,0 +1,14 @@
+:root > * {
+    --md-primary-fg-color:        #252B3A;
+    --md-primary-fg-color--dark:  #252B3A;
+    --md-accent-fg-color:        #4F81B3;
+    --md-footer-bg-color--dark: #252B3A;
+  }
+
+.md-footer__inner:not([hidden]) {
+  display: none
+}
+
+.rst-versions{
+  border-top:solid 10px #222c32;
+}

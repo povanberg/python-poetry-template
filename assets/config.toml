@@ -1,0 +1,4 @@
+[dummy_config]
+a = 1
+b = 2
+abc = [3, 5]

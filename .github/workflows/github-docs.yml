@@ -1,0 +1,51 @@
+name: Docs pipeline
+run-name: Docs
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    branches: [main]
+
+env:
+  PROJECT_NAME: ${{ github.event.repository.name }}
+  PROJECT_DOCS_DIR: docs/
+  PROJECT_DOCS_CONFIG: mkdocs.yml
+
+  DOCKER_SERVICE: dev
+  DOCKER_TARGET: docs
+
+jobs:
+
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - 
+        name: Build docker image
+        run: >
+          docker build .
+          --file dockers/${{env.DOCKER_SERVICE}}/dockerfile
+          --target ${{ env.DOCKER_TARGET }}
+          --tag ${{env.PROJECT_NAME}}-${{env.DOCKER_SERVICE}}:${{ env.DOCKER_TARGET }}
+      - uses: actions/cache@v2
+        with:
+          key: ${{ github.ref }}
+          path: .cache
+      - 
+        name: Deploy docs
+        run: > 
+          docker run -v $GITHUB_WORKSPACE:/mnt/workspace
+          --rm ${{env.PROJECT_NAME}}-${{env.DOCKER_SERVICE}}:${{ env.DOCKER_TARGET }}
+          "cd /mnt/workspace &&
+           git config --global --add safe.directory /mnt/workspace &&
+           git remote set-url origin  https://${{ secrets.GITHUB_TOKEN }}@github.com/pvanberg/python-poetry-template.git &&
+           poetry install --with docs &&
+           poetry run mkdocs gh-deploy --force --clean --verbose"
