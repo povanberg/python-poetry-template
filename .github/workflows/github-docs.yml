@@ -35,7 +35,7 @@ jobs:
           --file dockers/${{env.DOCKER_SERVICE}}/dockerfile
           --target ${{ env.DOCKER_TARGET }}
           --tag ${{env.PROJECT_NAME}}-${{env.DOCKER_SERVICE}}:${{ env.DOCKER_TARGET }}
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           key: ${{ github.ref }}
           path: .cache
