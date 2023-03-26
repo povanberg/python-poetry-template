@@ -1829,14 +1829,14 @@ setuptools = "*"
 
 [[package]]
 name = "notebook"
-version = "6.5.2"
+version = "6.5.3"
 description = "A web-based notebook environment for interactive computing"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "notebook-6.5.2-py3-none-any.whl", hash = "sha256:e04f9018ceb86e4fa841e92ea8fb214f8d23c1cedfde530cc96f92446924f0e4"},
-    {file = "notebook-6.5.2.tar.gz", hash = "sha256:c1897e5317e225fc78b45549a6ab4b668e4c996fd03a04e938fe5e7af2bfffd0"},
+    {file = "notebook-6.5.3-py3-none-any.whl", hash = "sha256:50a334ad9d60b30cb759405168ef6fc3d60350ab5439fb1631544bb09dcb2cce"},
+    {file = "notebook-6.5.3.tar.gz", hash = "sha256:b12bee3292211d85dd7e588a790ddce30cb3e8fbcfa1e803522a207f60819e05"},
 ]
 
 [package.dependencies]
@@ -3320,4 +3320,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<=3.11"
-content-hash = "7d187b84fa3fc5e913783768260474bca4d35c20250e143613abc54557103f15"
+content-hash = "6328de675502cb58c21dd26e499577a7b69afdd49280a5ce80f886fd43f5842d"
