@@ -1603,19 +1603,19 @@ python-legacy = ["mkdocstrings-python-legacy (>=0.2.1)"]
 
 [[package]]
 name = "mkdocstrings-python"
-version = "0.8.3"
+version = "1.1.0"
 description = "A Python handler for mkdocstrings."
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "mkdocstrings-python-0.8.3.tar.gz", hash = "sha256:9ae473f6dc599339b09eee17e4d2b05d6ac0ec29860f3fc9b7512d940fc61adf"},
-    {file = "mkdocstrings_python-0.8.3-py3-none-any.whl", hash = "sha256:4e6e1cd6f37a785de0946ced6eb846eb2f5d891ac1cc2c7b832943d3529087a7"},
+    {file = "mkdocstrings_python-1.1.0-py3-none-any.whl", hash = "sha256:4e9a9d728e6ba742ecbd7379f5091f3a32b16d723881963bb457b2149656e167"},
+    {file = "mkdocstrings_python-1.1.0.tar.gz", hash = "sha256:00cca5e47bf63eb2aece08b9887421b6828bdb939a13a481e4e8b495569e8101"},
 ]
 
 [package.dependencies]
 griffe = ">=0.24"
-mkdocstrings = ">=0.19"
+mkdocstrings = ">=0.20"
 
 [[package]]
 name = "mypy"
@@ -3320,4 +3320,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<=3.11"
-content-hash = "6328de675502cb58c21dd26e499577a7b69afdd49280a5ce80f886fd43f5842d"
+content-hash = "b4dcb16232b75c3be34115f19696e17f60c296c5c883a680da4e82f687262646"
