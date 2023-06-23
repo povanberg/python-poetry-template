@@ -17,7 +17,7 @@ wheel = "^0.40.0"
 notebook = "^6.5.3"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^7.2.0"
+pytest = "^7.4.0"
 pytest-cov = "^4.0.0"
 pre-commit = "^3.2.0"
 mypy = "^0.991"
